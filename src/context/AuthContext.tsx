@@ -18,34 +18,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const restoreSession = async () => {
             const userStr = await AsyncStorage.getItem('user');
-            if (!userStr) return;
+            if (userStr) {
+                const user: User = JSON.parse(userStr);
+                const now = Date.now();
 
-            const storedUser: User = JSON.parse(userStr);
-            const now = Date.now();
-            const MAX_SESSION_AGE = 1000 * 60 * 60 * 24; // 24 hours
-            const REFRESH_THRESHOLD = 1000 * 60 * 60 * 12; // 12 hours
+                const MAX_SESSION_AGE = 1000 * 60 * 60 * 24;
+                const REFRESH_THRESHOLD = 1000 * 60 * 60 * 12;
 
-            if (now - storedUser.issuedAt < MAX_SESSION_AGE) {
-                if (now - storedUser.issuedAt > REFRESH_THRESHOLD) {
-                    try {
-                        const refreshed = await refreshTokenApi();
-                        const updatedUser = { ...storedUser, ...refreshed };
-                        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
-                        setUser(updatedUser);
-                        return;
-                    } catch {
-                        await AsyncStorage.removeItem('user');
-                        setUser(null);
-                        return;
+                if (now - user.issuedAt < MAX_SESSION_AGE) {
+                    if (now - user.issuedAt > REFRESH_THRESHOLD) {
+                        try {
+                            const { token, issuedAt } = await refreshTokenApi();
+                            const updatedUser = { ...user, token, issuedAt };
+                            await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+                            setUser(updatedUser);
+                            return;
+                        } catch {
+                            await AsyncStorage.removeItem('user');
+                            setUser(null);
+                            return;
+                        }
                     }
-                }
 
-                setUser(storedUser);
-            } else {
-                await AsyncStorage.removeItem('user');
-                setUser(null);
+                    setUser(user);
+                    return;
+                }
             }
+
+            await AsyncStorage.removeItem('user');
+            setUser(null);
         };
+
 
         restoreSession();
     }, []);
@@ -62,9 +65,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await AsyncStorage.setItem('user', JSON.stringify(user));
     };
 
+
     const logout = async () => {
         setUser(null);
-        await AsyncStorage.removeItem('user');
+        await AsyncStorage.multiRemove(['user', 'token', 'token_issued_at']);
     };
 
     return (
