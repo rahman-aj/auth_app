@@ -74,3 +74,7 @@ Smooth keyboard handling with KeyboardAvoidingView
 - React Navigation
 - Redux Toolkit
 - AsyncStorage
+
+### 7. Application Preview
+<img width="2268" height="1640" alt="Screenshot 2025-07-12 at 10 07 32 PM-imageonline co-merged" src="https://github.com/user-attachments/assets/02a5d52d-fbb3-49b5-a0dc-5920d1af9169" />
+
