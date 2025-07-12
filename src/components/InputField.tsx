@@ -1,38 +1,17 @@
 import React from 'react';
-import { TextInput, Text, View, StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '../constants/theme';
+import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
 
-type Props = {
+type InputFieldProps = {
     label: string;
-    value: string;
-    onChangeText: (text: string) => void;
-    placeholder?: string;
     error?: string;
-    keyboardType?: 'default' | 'email-address';
-    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
-};
+} & TextInputProps;
 
-const InputField = ({
-    label,
-    value,
-    onChangeText,
-    placeholder,
-    error,
-    keyboardType = 'default',
-    autoCapitalize = 'none',
-}: Props) => {
+const InputField: React.FC<InputFieldProps> = ({ label, error, ...props }) => {
     return (
-        <View style={styles.wrapper}>
+        <View style={styles.container}>
             <Text style={styles.label}>{label}</Text>
-            <TextInput
-                style={[styles.input, error && styles.inputError]}
-                value={value}
-                onChangeText={onChangeText}
-                placeholder={placeholder}
-                keyboardType={keyboardType}
-                autoCapitalize={autoCapitalize}
-            />
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            <TextInput style={[styles.input, error && styles.errorBorder]} {...props} />
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
         </View>
     );
 };
@@ -40,21 +19,16 @@ const InputField = ({
 export default InputField;
 
 const styles = StyleSheet.create({
-    wrapper: { marginBottom: SPACING.md },
-    label: { marginBottom: 4, fontWeight: 'bold', color: COLORS.black },
+    container: { marginBottom: 16 },
+    label: { fontSize: 14, marginBottom: 6, color: '#333' },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.gray,
+        borderColor: '#ccc',
         borderRadius: 6,
-        padding: SPACING.sm,
-        backgroundColor: COLORS.white,
+        padding: 12,
+        fontSize: 16,
+        backgroundColor: '#fff',
     },
-    inputError: {
-        borderColor: COLORS.error,
-    },
-    errorText: {
-        marginTop: 4,
-        color: COLORS.error,
-        fontSize: 12,
-    },
+    errorText: { color: 'red', marginTop: 4, fontSize: 12 },
+    errorBorder: { borderColor: 'red' },
 });

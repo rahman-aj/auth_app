@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import { TextInput, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '../constants/theme';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-type Props = {
+type PasswordInputProps = {
     value: string;
     onChangeText: (text: string) => void;
     error?: string;
+    placeholder?: string;
 };
 
-const PasswordInput = ({ value, onChangeText, error }: Props) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChangeText, error, placeholder }) => {
     const [secure, setSecure] = useState(true);
 
     return (
-        <View style={styles.wrapper}>
+        <View style={styles.container}>
             <Text style={styles.label}>Password</Text>
-            <View style={styles.passwordContainer}>
+            <View style={[styles.inputContainer, error && styles.errorBorder]}>
                 <TextInput
-                    style={[styles.input, error && styles.inputError]}
+                    placeholder={placeholder || 'Enter password'}
+                    secureTextEntry={secure}
+                    style={styles.input}
                     value={value}
                     onChangeText={onChangeText}
-                    placeholder="Enter password"
-                    secureTextEntry={secure}
-                    autoCapitalize="none"
                 />
                 <TouchableOpacity onPress={() => setSecure(!secure)}>
-                    <Text style={styles.toggle}>{secure ? 'Show' : 'Hide'}</Text>
+                    <Ionicons name={secure ? 'eye-off' : 'eye'} size={20} color="#666" />
                 </TouchableOpacity>
             </View>
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
         </View>
     );
 };
@@ -35,32 +35,18 @@ const PasswordInput = ({ value, onChangeText, error }: Props) => {
 export default PasswordInput;
 
 const styles = StyleSheet.create({
-    wrapper: { marginBottom: SPACING.md },
-    label: { marginBottom: 4, fontWeight: 'bold', color: COLORS.black },
-    passwordContainer: {
+    container: { marginBottom: 16 },
+    label: { fontSize: 14, marginBottom: 6, color: '#333' },
+    inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: COLORS.gray,
+        borderColor: '#ccc',
         borderRadius: 6,
-        paddingHorizontal: SPACING.sm,
-        backgroundColor: COLORS.white,
+        paddingHorizontal: 12,
+        backgroundColor: '#fff',
     },
-    input: {
-        flex: 1,
-        paddingVertical: SPACING.sm,
-    },
-    inputError: {
-        borderColor: COLORS.error,
-    },
-    toggle: {
-        color: COLORS.primary,
-        marginLeft: SPACING.sm,
-        fontWeight: 'bold',
-    },
-    errorText: {
-        marginTop: 4,
-        color: COLORS.error,
-        fontSize: 12,
-    },
+    input: { flex: 1, height: 48, fontSize: 16 },
+    errorText: { color: 'red', marginTop: 4, fontSize: 12 },
+    errorBorder: { borderColor: 'red' },
 });
