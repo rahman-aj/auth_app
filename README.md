@@ -10,7 +10,9 @@ A fully functional authentication app built with **Expo**, **TypeScript**, **Rea
 
 ```bash
 git clone git@github.com:rahman-aj/auth_app.git
-cd auth_app
+
+Then clone the node server:
+git clone git@github.com:rahman-aj/auth_app_server.git
 ```
 
 ### 2. Install Dependencies
@@ -21,6 +23,9 @@ npm install
 ### 3. Start the App
 ```bash
 npx expo start
+
+Then start the server:
+node index.js
 ```
 Note: If you’re using a physical device, scan the QR code with the Expo Go app. For simulator use, ensure your environment is set up (Xcode or Android Studio).
 
